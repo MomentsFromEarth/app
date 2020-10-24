@@ -1,5 +1,5 @@
 name: mfe
-description: A new Flutter project.
+description: Moments From Earth
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -27,7 +27,6 @@ dependencies:
   # AWS Amplify
   amplify_core: '<1.0.0'
   amplify_auth_cognito: '<1.0.0'
-  amplify_analytics_pinpoint: '<1.0.0'
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

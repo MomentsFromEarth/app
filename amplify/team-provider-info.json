@@ -1,0 +1,20 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-mfe-dev-225056-authRole",
+            "UnauthRoleArn": "arn:aws:iam::776913033148:role/amplify-mfe-dev-225056-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::776913033148:role/amplify-mfe-dev-225056-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-mfe-dev-225056-deployment",
+            "UnauthRoleName": "amplify-mfe-dev-225056-unauthRole",
+            "StackName": "amplify-mfe-dev-225056",
+            "StackId": "arn:aws:cloudformation:us-east-1:776913033148:stack/amplify-mfe-dev-225056/be56bc60-15a3-11eb-bf47-12f4ed1177e6",
+            "AmplifyAppId": "d3i9sqxwnw3la"
+        },
+        "categories": {
+            "auth": {
+                "mfe": {}
+            }
+        }
+    }
+}
