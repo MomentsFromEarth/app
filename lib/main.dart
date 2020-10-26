@@ -1,20 +1,18 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_core/amplify_core.dart';
-import 'amplifyconfiguration.dart';
-
-import 'dart:developer';
+import 'aws/amplify_config.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MFEApp());
 }
 
-class MyApp extends StatefulWidget {
+class MFEApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MFEApp> {
   bool _amplifyConfigured = false;
   bool isSignUpComplete = false;
 
@@ -48,15 +46,6 @@ class _MyAppState extends State<MyApp> {
 
   // Send an event to Pinpoint
   void _recordEvent() async {
-    /*
-    AnalyticsEvent event = AnalyticsEvent("test");
-    event.properties.addBoolProperty("boolKey", true);
-    event.properties.addDoubleProperty("doubleKey", 10.0);
-    event.properties.addIntProperty("intKey", 10);
-    event.properties.addStringProperty("stringKey", "stringValue");
-    Amplify.Analytics.recordEvent(event: event);
-    */
-
     /*
     try {
       Map<String, dynamic> userAttributes = {
@@ -164,9 +153,9 @@ class _MyAppState extends State<MyApp> {
       await Amplify.Auth.signOut();
       SignInResult res2 = await Amplify.Auth.signIn(
         username:"willstepp@gmail.com",
-        password: "palebluedot",
+        password: "silver55",
       );
-      print("SIGNED IN (palebluedot): ${res2.isSignedIn}!");
+      print("SIGNED IN (silver55): ${res2.isSignedIn}!");
       */
       CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(options: CognitoSessionOptions(getAWSCredentials: true));
       if (sess.isSignedIn) {
@@ -182,41 +171,29 @@ class _MyAppState extends State<MyApp> {
           print(e.exceptionList[1].detail);
     }
 
-    /*Amplify.Auth.fetchAuthSession().startListening((hubEvent) {
-      switch(hubEvent["eventName"]) {
-        case "SIGNED_IN": {
-          print("USER IS SIGNED IN");
-        }
-        break;
-        case "SIGNED_OUT": {
-          print("USER IS SIGNED OUT");
-        }
-        break;
-        case "SESSION_EXPIRED": {
-          print("USER IS SIGNED IN");
-        }
-        break;
-      }
-    });*/
-
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: Colors.green
+      ),
       home: Scaffold(
+          backgroundColor: Colors.grey[900],
           appBar: AppBar(
-            title: const Text('Amplify Core example app'),
+            backgroundColor: Colors.grey[900],
+            title: const Text('Moments from Earth'),
           ),
           body: ListView(padding: EdgeInsets.all(10.0), children: <Widget>[
             Center( 
               child: Column (
                 children: [
-                  const Padding(padding: EdgeInsets.all(5.0)),
-                  Text(
-                    _amplifyConfigured ? "configured" : "not configured"
-                  ),                  
+                  const Padding(padding: EdgeInsets.all(5.0)),            
                   RaisedButton(
+                    color: Colors.green,
                     onPressed: _amplifyConfigured ? _recordEvent : null,
                     child: const Text('record event')
                   )
