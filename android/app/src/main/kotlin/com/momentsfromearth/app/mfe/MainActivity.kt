@@ -1,4 +1,4 @@
-package com.example.mfe
+package com.momentsfromearth.app.mfe
 
 import io.flutter.embedding.android.FlutterActivity
 

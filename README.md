@@ -1,4 +1,4 @@
-# MFE
+# mfe
 
 A new Flutter project.
 

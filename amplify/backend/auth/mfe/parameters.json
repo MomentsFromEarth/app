@@ -1,7 +1,7 @@
 {
     "identityPoolName": "mfe_identitypool",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "mfe996baee5",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "mfe3c8a25a4",
     "userPoolName": "mfe_userpool",
     "autoVerifiedAttributes": [
         "email"
@@ -28,7 +28,7 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "mfe996baee5_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "mfe3c8a25a4_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
     "useDefault": "manual",
     "authSelections": "identityPoolAndUserPool",
