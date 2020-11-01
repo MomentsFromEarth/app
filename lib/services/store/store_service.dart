@@ -1,9 +1,9 @@
-class StorageService {
-  static final _instance = StorageService._internal();
+class StoreService {
+  static final _instance = StoreService._internal();
 
-  StorageService._internal();
+  StoreService._internal();
 
-  static StorageService getInstance() {
+  static StoreService getInstance() {
     return _instance;
   }
 }

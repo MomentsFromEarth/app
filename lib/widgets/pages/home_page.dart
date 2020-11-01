@@ -4,7 +4,7 @@ import './register_page.dart';
 import './message_curator_page.dart';
 
 class HomePage extends StatelessWidget {
-  static const routeName = '/';
+  static const routeName = '/home';
 
   onAccessArchivePressed(BuildContext context) {
     Navigator.of(context).pushNamed(RegisterPage.routeName);

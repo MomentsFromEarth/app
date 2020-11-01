@@ -1,3 +1,10 @@
 # This is a generated file; do not edit or check into version control.
 amplify_auth_cognito=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/amplify_auth_cognito-0.0.1-dev.3/
 amplify_core=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/amplify_core-0.0.1-dev.3/
+path_provider_linux=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-0.0.1+2/
+path_provider_windows=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-0.0.4+1/
+shared_preferences=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.12+2/
+shared_preferences_linux=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-0.0.2+2/
+shared_preferences_macos=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-0.0.1+10/
+shared_preferences_web=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-0.1.2+7/
+shared_preferences_windows=/Users/Daniel/Library/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-0.0.1+1/
