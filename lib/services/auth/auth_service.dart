@@ -15,6 +15,10 @@ class AuthService {
     return amplify.loggedIn();
   }
 
+  Future<bool> register(String email, String password) async {
+    return amplify.signUp(email, password);
+  }
+
   static AuthService getInstance() {
     return _instance;
   }

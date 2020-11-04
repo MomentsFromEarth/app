@@ -22,6 +22,26 @@ class AmplifyService {
     return sess.isSignedIn;
   }
 
+  Future<bool> signUp(String username, String password) async {
+    try {
+      Map<String, dynamic> userAttributes = {
+        "email": username,
+      };
+      await Amplify.Auth.signUp(
+        username: username,
+        password: password,
+        options: CognitoSignUpOptions(
+          userAttributes: userAttributes
+        )
+      );
+    } on AuthError catch (e) {
+      print("AmplifyService.register");
+      print(e.cause);
+      return false;
+    }
+    return true;
+  }
+
   static AmplifyService getInstance() {
     return _instance;
   }

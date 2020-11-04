@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/auth/auth_service.dart';
 
 class MessageCuratorPage extends StatefulWidget {
   static const routeName = '/message-curator';
@@ -11,9 +12,17 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
   final emailController =  TextEditingController();
   final messageController = TextEditingController();
 
-  onSendMessagedPressed(BuildContext context) {
-    print('This is Email: ${emailController.text}');
-    print('This is Message: ${messageController.text}');
+  final defaultPassword = 'palebluedot';
+
+  bool blank(String text) {
+    return text != null && text != "";
+  }
+
+  onSendMessagePressed(BuildContext context) async {
+    if (!blank(emailController.text) && !blank(messageController.text)) {
+      await AuthService.getInstance().register(emailController.text, defaultPassword);
+      Navigator.of(context).pop(true);
+    }
   }
 
   @override
@@ -71,7 +80,7 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
               child: Text('Send Message [Curator]'),
               color: Colors.green,
               textColor: Colors.white70,
-              onPressed: () => onSendMessagedPressed(context),
+              onPressed: () => onSendMessagePressed(context),
             ),
           ]
         )
