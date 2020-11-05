@@ -2,6 +2,7 @@ import '../aws/amplify_service.dart';
 
 class AuthService {
   static final _instance = AuthService._internal();
+  static const defaultPassword = "palebluedot";
 
   AuthService._internal();
 

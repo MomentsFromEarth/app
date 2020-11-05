@@ -15,12 +15,12 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
   final defaultPassword = 'palebluedot';
 
   bool blank(String text) {
-    return text != null && text != "";
+    return text == null || text == "";
   }
 
   onSendMessagePressed(BuildContext context) async {
     if (!blank(emailController.text) && !blank(messageController.text)) {
-      await AuthService.getInstance().register(emailController.text, defaultPassword);
+      await AuthService.getInstance().register(emailController.text, AuthService.defaultPassword);
       Navigator.of(context).pop(true);
     }
   }
