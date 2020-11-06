@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import './register_page.dart';
+import './join_page.dart';
 import './forgot_password_page.dart';
 
 class LoginPage extends StatelessWidget {
   static const routeName = '/login';
 
-  onRegisterPressed(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(RegisterPage.routeName);
+  onJoinPressed(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(JoinPage.routeName);
   }
 
   onForgotPasswordPressed(BuildContext context) {
@@ -25,10 +25,10 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(
-              child: Text('Register'),
+              child: Text('Join'),
               color: Colors.green,
               textColor: Colors.white70,
-              onPressed: () => onRegisterPressed(context),
+              onPressed: () => onJoinPressed(context),
             ),
             FlatButton(
               child: Text('Forgot [Password]'),

@@ -16,7 +16,7 @@ class AuthService {
     return amplify.isSignedIn();
   }
 
-  Future<bool> register(String email, String password) async {
+  Future<bool> join(String email, String password) async {
     return amplify.signUp(email, password);
   }
 

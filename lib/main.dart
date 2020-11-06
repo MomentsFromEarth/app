@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './widgets/pages/launch_page.dart';
 import './widgets/pages/home_page.dart';
 import './widgets/pages/login_page.dart';
-import './widgets/pages/register_page.dart';
+import './widgets/pages/join_page.dart';
 import './widgets/pages/forgot_password_page.dart';
 import './widgets/pages/reset_password_page.dart';
 import './widgets/pages/archive_page.dart';
@@ -36,7 +36,7 @@ class MfeApp extends StatelessWidget {
         LaunchPage.routeName: (ctx) => LaunchPage(),
         HomePage.routeName: (ctx) => HomePage(),
         LoginPage.routeName: (ctx) => LoginPage(),
-        RegisterPage.routeName: (ctx) => RegisterPage(),
+        JoinPage.routeName: (ctx) => JoinPage(),
         ForgotPasswordPage.routeName: (ctx) => ForgotPasswordPage(),
         ResetPasswordPage.routeName: (ctx) => ResetPasswordPage(),
         MessageCuratorPage.routeName: (ctx) => MessageCuratorPage(),

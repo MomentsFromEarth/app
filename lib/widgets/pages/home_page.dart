@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import './register_page.dart';
+import './join_page.dart';
 import './message_curator_page.dart';
 
 class HomePage extends StatelessWidget {
   static const routeName = '/home';
 
   onAccessArchivePressed(BuildContext context) {
-    Navigator.of(context).pushNamed(RegisterPage.routeName);
+    Navigator.of(context).pushNamed(JoinPage.routeName);
   }
 
   onMessageCuratorPressed(BuildContext rootContext, BuildContext nestedContext) async {

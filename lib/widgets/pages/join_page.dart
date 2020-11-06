@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import './login_page.dart';
 
-class RegisterPage extends StatefulWidget {
-  static const routeName = '/register';
+class JoinPage extends StatefulWidget {
+  static const routeName = '/join';
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _JoinPageState createState() => _JoinPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _JoinPageState extends State<JoinPage> {
   final emailController =  TextEditingController();
   final passwordController = TextEditingController();
   final tokenController = TextEditingController();
@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
     Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
   }
 
-  onRegisterPressed(BuildContext context) {
+  onJoinPressed(BuildContext context) {
     print('Email: ${emailController.text}');
     print('Password: ${passwordController.text}');
     print('Token: ${tokenController.text}');
@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GUEST@MFE: ~/register'),
+        title: Text('GUEST@MFE: ~/join'),
       ),
       body: Center(
         child: Column(
@@ -86,7 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   borderSide: BorderSide(color: Colors.green),
                   borderRadius: BorderRadius.circular(0.5)
                 ),
-                hintText: 'Curator Invitation Token',
+                hintText: "Curator Invitation ['|'[]|<[-|\\|]",
                 hintStyle: TextStyle(
                   color: Colors.white30,
                   fontStyle: FontStyle.italic,
@@ -98,10 +98,10 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             SizedBox(height: 10),
             FlatButton(
-              child: Text('Register'),
+              child: Text('Join'),
               color: Colors.green,
               textColor: Colors.white70,
-              onPressed: () => onRegisterPressed(context),
+              onPressed: () => onJoinPressed(context),
             ),
             SizedBox(height: 10),
             FlatButton(

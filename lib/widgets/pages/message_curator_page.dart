@@ -20,7 +20,7 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
 
   onSendMessagePressed(BuildContext context) async {
     if (!blank(emailController.text) && !blank(messageController.text)) {
-      await AuthService.getInstance().register(emailController.text, AuthService.defaultPassword);
+      await AuthService.getInstance().join(emailController.text, AuthService.defaultPassword);
       Navigator.of(context).pop(true);
     }
   }

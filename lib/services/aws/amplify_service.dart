@@ -29,7 +29,7 @@ class AmplifyService {
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.isSignedIn]");
       print(e.cause);
-      return false;
+      throw e;
     }
   }
 
@@ -45,12 +45,12 @@ class AmplifyService {
           userAttributes: userAttributes
         )
       );
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.signUp]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> confirmSignUp(String username, String confirmationCode) async {
@@ -59,23 +59,23 @@ class AmplifyService {
         username: username,
         confirmationCode: confirmationCode
       );
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.confirmSignUp]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> resendSignUpCode(String username) async {
     try {
       await Amplify.Auth.resendSignUpCode(username: username);
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.resendSignUpCode]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> signIn(String username, String password) async {
@@ -88,30 +88,30 @@ class AmplifyService {
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.signIn]");
       print(e.cause);
-      return false;
+      throw e;
     }
   }
 
   Future<bool> signOut() async {
     try {
       await Amplify.Auth.signOut();
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.signOut]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> resetPassword(String username) async {
     try {
       await Amplify.Auth.resetPassword(username: username);
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.resetPassword]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> confirmPassword(String username, String newPassword, String confirmationCode) async {
@@ -121,12 +121,12 @@ class AmplifyService {
         newPassword: newPassword,
         confirmationCode: confirmationCode
       );
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.confirmPassword]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 
   Future<bool> updatePassword(String oldPassword, String newPassword) async {
@@ -135,11 +135,11 @@ class AmplifyService {
         oldPassword: oldPassword,
         newPassword: newPassword
       );
-      return true;
     } on AuthError catch (e) {
       print("ERROR[AmplifyService.updatePassword]");
       print(e.cause);
-      return false;
+      throw e;
     }
+    return true;
   }
 }
