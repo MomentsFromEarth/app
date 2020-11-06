@@ -13,7 +13,7 @@ class AuthService {
   }
 
   Future<bool> loggedIn() async {
-    return amplify.loggedIn();
+    return amplify.isSignedIn();
   }
 
   Future<bool> register(String email, String password) async {
