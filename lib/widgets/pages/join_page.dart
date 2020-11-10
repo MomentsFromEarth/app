@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './archive_page.dart';
 import './login_page.dart';
 
 import '../../services/auth/auth_service.dart';
@@ -28,14 +29,28 @@ class _JoinPageState extends State<JoinPage> {
     try {
       String email = emailController.text;
       String token = tokenController.text;
-      if (!blank(email) && !blank(token)) {
-        bool confirmed = await AuthService.getInstance().confirmJoin(emailController.text, tokenController.text);
+      String password = passwordController.text;
+      if (!blank(email) && !blank(token) && !blank(password)) {
+        var auth = AuthService.getInstance();
+        bool confirmed = await auth.confirmJoin(email, token);
         if (confirmed) {
-          // sign in
-          // update password using AuthService.defaultPassword and passwordController.text
-          // sign out
-          // sign in
-          // nav to ArchivePage
+          bool signedIn = await auth.login(email, AuthService.defaultPassword);
+          if (signedIn) {
+            bool updated = await auth.updatePassword(AuthService.defaultPassword, password);
+            if (updated) {
+              await auth.logout();
+              signedIn = await auth.login(email, password);
+              if (signedIn) {
+                Navigator.of(context).pushReplacementNamed(ArchivePage.routeName);
+              } else {
+                // show snackbar error
+              }
+            } else {
+               // show snackbar error
+            }
+          } else {
+            // show snackbar error
+          }
         } else {
           // prompt to resend invitation token
         }

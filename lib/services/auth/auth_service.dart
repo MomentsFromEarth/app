@@ -38,15 +38,11 @@ class AuthService {
 
   AuthService._internal();
 
-  AmplifyService amplify = AmplifyService.getInstance();
-
-  String _getErrorCause(String amplifyCause) {
-    return _amplifyErrorMap[amplifyCause] != null ?  _amplifyErrorMap[amplifyCause] : _defaultAuthServiceError;
-  }
+  AmplifyService _amplify = AmplifyService.getInstance();
 
   init() async {
     try {
-      await amplify.init();
+      await _amplify.init();
     } on AuthError catch (e) {
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
@@ -54,7 +50,7 @@ class AuthService {
 
   Future<bool> loggedIn() async {
     try {
-      return await amplify.isSignedIn();
+      return await _amplify.isSignedIn();
     } on AuthError catch (e) {
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
@@ -62,15 +58,63 @@ class AuthService {
 
   Future<bool> join(String email, String password) async {
     try {
-      return await amplify.signUp(email, password);
+      return await _amplify.signUp(email, password);
     } on AuthError catch (e) {
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
   }
 
-  Future<bool> confirmJoin(String email, String token) async {
+  Future<bool> confirmJoin(String email, String inviteToken) async {
     try {
-      return await amplify.confirmSignUp(email, token);
+      return await _amplify.confirmSignUp(email, inviteToken);
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> resendInviteToken(String email) async {
+    try {
+      return await _amplify.resendSignUpCode(email);
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> login(String email, String password) async {
+    try {
+      return await _amplify.signIn(email, password);
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> logout() async {
+    try {
+      return await _amplify.signOut();
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> resetPassword(String email) async {
+    try {
+      return await _amplify.resetPassword(email);
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> confirmPassword(String email, String newPassword, String resetToken) async {
+    try {
+      return await _amplify.confirmPassword(email, newPassword, resetToken);
+    } on AuthError catch (e) {
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+    }
+  }
+
+  Future<bool> updatePassword(String oldPassword, String newPassword) async {
+    try {
+      return await _amplify.updatePassword(oldPassword, newPassword);
     } on AuthError catch (e) {
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
@@ -78,5 +122,9 @@ class AuthService {
 
   static AuthService getInstance() {
     return _instance;
+  }
+
+  String _getErrorCause(String amplifyCause) {
+    return _amplifyErrorMap[amplifyCause] != null ?  _amplifyErrorMap[amplifyCause] : _defaultAuthServiceError;
   }
 }
