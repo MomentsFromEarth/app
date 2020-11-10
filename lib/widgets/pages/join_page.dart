@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import './login_page.dart';
 
+import '../../services/auth/auth_service.dart';
+
 class JoinPage extends StatefulWidget {
   static const routeName = '/join';
 
@@ -14,14 +16,34 @@ class _JoinPageState extends State<JoinPage> {
   final passwordController = TextEditingController();
   final tokenController = TextEditingController();
 
+  bool blank(String text) {
+    return text == null || text == "";
+  }
+
   onLoginPressed(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
   }
 
-  onJoinPressed(BuildContext context) {
-    print('Email: ${emailController.text}');
-    print('Password: ${passwordController.text}');
-    print('Token: ${tokenController.text}');
+  onJoinPressed(BuildContext context) async {
+    try {
+      String email = emailController.text;
+      String token = tokenController.text;
+      if (!blank(email) && !blank(token)) {
+        bool confirmed = await AuthService.getInstance().confirmJoin(emailController.text, tokenController.text);
+        if (confirmed) {
+          // sign in
+          // update password using AuthService.defaultPassword and passwordController.text
+          // sign out
+          // sign in
+          // nav to ArchivePage
+        } else {
+          // prompt to resend invitation token
+        }
+      }
+    } on AuthServiceError catch (e) {
+      print("JoinPage::onJoinPressed.error[${e.cause}]");
+      // show snackbar error, unless MFE_CONFIRM_SIGNUP_FAILED, at which prompt to resend invitation token
+    }
   }
 
   @override
