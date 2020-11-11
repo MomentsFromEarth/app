@@ -44,8 +44,7 @@ class AmplifyService {
         )
       );
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.signUp]");
-      print(e.cause);
+      print("AmplifyService.signUp - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -58,8 +57,7 @@ class AmplifyService {
         confirmationCode: confirmationCode
       );
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.confirmSignUp]");
-      print(e.cause);
+      print("AmplifyService.confirmSignUp - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -69,8 +67,7 @@ class AmplifyService {
     try {
       await Amplify.Auth.resendSignUpCode(username: username);
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.resendSignUpCode]");
-      print(e.cause);
+      print("AmplifyService.resendSignUpCode - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -93,8 +90,7 @@ class AmplifyService {
     try {
       await Amplify.Auth.signOut();
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.signOut]");
-      print(e.cause);
+      print("AmplifyService.signOut - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -104,8 +100,7 @@ class AmplifyService {
     try {
       await Amplify.Auth.resetPassword(username: username);
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.resetPassword]");
-      print(e.cause);
+      print("AmplifyService.resetPassword - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -119,8 +114,7 @@ class AmplifyService {
         confirmationCode: confirmationCode
       );
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.confirmPassword]");
-      print(e.cause);
+      print("AmplifyService.confirmPassword - ERROR[${e.cause}]");
       throw e;
     }
     return true;
@@ -133,8 +127,7 @@ class AmplifyService {
         newPassword: newPassword
       );
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.updatePassword]");
-      print(e.cause);
+      print("AmplifyService.updatePassword - ERROR[${e.cause}]");
       throw e;
     }
     return true;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+
 import '../../services/auth/auth_service.dart';
+import '../../services/settings/settings_service.dart';
 
 class MessageCuratorPage extends StatefulWidget {
   static const routeName = '/message-curator';
@@ -18,9 +21,21 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
     return text == null || text == "";
   }
 
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(milliseconds: 100), () async {
+      var email = await SettingsService.getInstance().getString("email");
+      if (!blank(email)) {
+        emailController.text = email;
+      }
+    });
+  }
+
   onSendMessagePressed(BuildContext context) async {
     if (!blank(emailController.text) && !blank(messageController.text)) {
       await AuthService.getInstance().join(emailController.text, AuthService.defaultPassword);
+      SettingsService.getInstance().setString("email", emailController.text);
       Navigator.of(context).pop(true);
     }
   }

@@ -26,8 +26,7 @@ class _LaunchPageState extends State<LaunchPage> {
   void initAuthAndRedirect() async {
     var auth = AuthService.getInstance();
     await auth.init();
-    bool loggedIn = await auth.loggedIn();
-    if (loggedIn) {
+    if (await auth.loggedIn()) {
       Timer(Duration(seconds: launchDelay), loadArchivePage);
     } else {
       Timer(Duration(seconds: launchDelay), loadHomePage);

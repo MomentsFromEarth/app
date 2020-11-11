@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import './archive_page.dart';
 import './login_page.dart';
 
 import '../../services/auth/auth_service.dart';
+import '../../services/settings/settings_service.dart';
+
 
 class JoinPage extends StatefulWidget {
   static const routeName = '/join';
@@ -13,9 +16,20 @@ class JoinPage extends StatefulWidget {
 }
 
 class _JoinPageState extends State<JoinPage> {
-  final emailController =  TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final tokenController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(milliseconds: 100), () async {
+      var email = await SettingsService.getInstance().getString("email");
+      if (!blank(email)) {
+        emailController.text = email;
+      }
+    });
+  }
 
   bool blank(String text) {
     return text == null || text == "";
