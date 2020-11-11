@@ -24,7 +24,7 @@ class _JoinPageState extends State<JoinPage> {
   void initState() {
     super.initState();
     Timer(Duration(milliseconds: 100), () async {
-      var email = await SettingsService.getInstance().getString("email");
+      var email = await SettingsService.getInstance().getJoinedEmail();
       if (!blank(email)) {
         emailController.text = email;
       }
@@ -45,31 +45,68 @@ class _JoinPageState extends State<JoinPage> {
     String password = passwordController.text;
     try {
       if (!blank(email) && !blank(token) && !blank(password)) {
-        var authService = AuthService.getInstance();
-        await authService.confirmJoin(email, token);
-        await authService.logout();
-        await authService.login(email, AuthService.defaultPassword);
-        await authService.updatePassword(AuthService.defaultPassword, password);
-        await authService.logout();
-        await authService.login(email, password);
-        Navigator.of(rootContext).pushReplacementNamed(ArchivePage.routeName);
+        var auth = AuthService.getInstance();
+        var settings = SettingsService.getInstance();
+        var confirmed = await settings.getJoinedConfirmed();
+        if (!confirmed) {
+          confirmed = await auth.confirmJoin(email, token);
+          await settings.setJoinedConfirmed(confirmed);
+        }
+        var updated = await settings.getJoinedPassword();
+        if (!updated) {
+          await auth.logout();
+          await auth.login(email, AuthService.defaultPassword);
+          updated = await auth.updatePassword(AuthService.defaultPassword, password);
+          await settings.setJoinedPassword(updated);
+        }
+        await auth.logout();
+        var loggedIn = await auth.login(email, password);
+        if (loggedIn) {
+          await settings.removeJoined();
+          Navigator.of(rootContext).pushReplacementNamed(ArchivePage.routeName);
+        }
       }
     } on AuthServiceError catch (e) {
-      print("JoinPage.onJoinPressed - ERROR[${e.cause}]");
+      var msg = "ERROR[${e.cause}]";
       switch (e.cause) {
         case AuthServiceError.ConfirmSignupFailed:
-          _showResendInviteTokenDialog(email, nestedContext);
+          switch (e.exception) {
+            case AuthServiceError.TokenInvalid:
+              _showResendInviteTokenDialog(email, "TOKEN_INVALID", nestedContext);
+              break;
+            case AuthServiceError.TokenExpired:
+              _showResendInviteTokenDialog(email, "TOKEN_EXPIRED", nestedContext);
+              break;
+            case AuthServiceError.UserNotFound:
+              msg = "ERROR[EMAIL_NOT_FOUND]";
+              break;
+            case AuthServiceError.UserAlreadyConfirmed:
+              msg = "ERROR[EMAIL_ALREADY_EXISTS]";
+              break;
+            default:
+              break;
+          }
+          break;
+        case AuthServiceError.UpdatePasswordFailed:
+          switch (e.exception) {
+            case AuthServiceError.InvalidPassword:
+              msg = "ERROR[PASSWORD_INVALID: >= 6 CHARS]";
+              break;
+            default:
+              break;
+          }
           break;
         default:
-          Scaffold.of(nestedContext)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text('ERROR[${e.cause}]')));
           break;
       }
+      print("JoinPage.onJoinPressed - $msg");
+      Scaffold.of(nestedContext)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(msg)));
     }
   }
 
-  Future<void> _showResendInviteTokenDialog(String email, BuildContext nestedContext) async {
+  Future<void> _showResendInviteTokenDialog(String email, String msg, BuildContext nestedContext) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -79,11 +116,17 @@ class _JoinPageState extends State<JoinPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Unable to confirm Curator Invite', style: TextStyle(color: Colors.black87))
+                Text(msg, style: TextStyle(color: Colors.black87))
               ],
             ),
           ),
           actions: <Widget>[
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              }
+            ),
             TextButton(
               child: Text('RESEND'),
               onPressed: () async {
@@ -91,7 +134,7 @@ class _JoinPageState extends State<JoinPage> {
                 await authService.resendInviteToken(email);
                 Scaffold.of(nestedContext)
                   ..removeCurrentSnackBar()
-                  ..showSnackBar(SnackBar(content: Text('INVITE RESENT [$email]')));
+                  ..showSnackBar(SnackBar(content: Text('INVITATION RESENT [$email]')));
                 Navigator.of(context).pop();
               },
             ),
@@ -105,7 +148,7 @@ class _JoinPageState extends State<JoinPage> {
   Widget build(BuildContext rootContext) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GUEST@MFE: ~/join'),
+        title: Text('~/join'),
       ),
       body: Builder(
         builder: (BuildContext nestedContext) {

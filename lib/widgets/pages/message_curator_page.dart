@@ -25,7 +25,7 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
   void initState() {
     super.initState();
     Timer(Duration(milliseconds: 100), () async {
-      var email = await SettingsService.getInstance().getString("email");
+      var email = await SettingsService.getInstance().getJoinedEmail();
       if (!blank(email)) {
         emailController.text = email;
       }
@@ -34,8 +34,7 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
 
   onSendMessagePressed(BuildContext context) async {
     if (!blank(emailController.text) && !blank(messageController.text)) {
-      await AuthService.getInstance().join(emailController.text, AuthService.defaultPassword);
-      SettingsService.getInstance().setString("email", emailController.text);
+      await AuthService.getInstance().joinMessageCurator(emailController.text);
       Navigator.of(context).pop(true);
     }
   }
@@ -44,7 +43,7 @@ class _MessageCuratorPageState extends State<MessageCuratorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GUEST@MFE: ~/message-curator'),
+        title: Text('~/message-curator'),
       ),
       body: Center(
         child: Column(

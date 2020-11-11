@@ -9,7 +9,7 @@ class ArchivePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('theSantiagoDog@MFE: ~/archive/index'),
+        title: Text('~/archive/index'),
       ),
       body: Center(
         child: Column(

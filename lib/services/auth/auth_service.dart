@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import '../aws/amplify_service.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
+import '../settings/settings_service.dart';
+
 class AuthServiceError implements Exception {
   static const ConfirmSigninFailed =                      "MFE_CONFIRM_SIGNIN_FAILED";
   static const ConfirmSignupFailed =                      "MFE_CONFIRM_SIGNUP_FAILED";
@@ -23,10 +25,20 @@ class AuthServiceError implements Exception {
   static const AuthPluginIncorrectlyAdded =               "MFE_AUTH_PLUGIN_INCORRECTLY_ADDED";
   static const UnrecognizedAuthError =                    "MFE_UNRECOGNIZED_AUTH_ERROR";
 
-  String cause;
+  static const InvalidPassword =                          "MFE_INVALID_PASSWORD";
+  static const TokenExpired =                             "MFE_TOKEN_EXPIRED";
+  static const TokenInvalid =                             "MFE_TOKEN_INVALID";
+  static const UserNotFound =                             "MFE_USER_NOT_FOUND";
+  static const UserAlreadyConfirmed =                     "MFE_USER_ALREADY_CONFIRMED";        
 
-  AuthServiceError.init({@required String cause, PlatformException platformException}) {
+  String cause;
+  String exception;
+  String detail;
+
+  AuthServiceError.init({@required String cause, String exception, String detail, PlatformException platformException}) {
     this.cause = cause;
+    this.exception = exception;
+    this.detail = detail;
   }
 }
 
@@ -54,6 +66,41 @@ class AuthService {
     "AUTH_PLUGIN_INCORRECTLY_ADDED":                AuthServiceError.AuthPluginIncorrectlyAdded
   };
 
+  static final _amplifyExceptionMap = {
+    "ALIAS_EXISTS": "",
+    "AMAZON_CLIENT_EXCEPTION": "",
+    "AMAZON_SERVICE_EXCEPTION": "",
+    "CODE_DELIVERY_FAILURE": "",
+    "CODE_EXPIRED": AuthServiceError.TokenExpired,
+    "CODE_MISMATCH": AuthServiceError.TokenInvalid,
+    "CONFIGURATION": "",
+    "INTERNAL_ERROR": "",
+    "INVALID_ACCOUNT_TYPE": "",
+    "INVALID_LAMBDA_RESPONSE": "",
+    "INVALID_PARAMETER": AuthServiceError.InvalidPassword,
+    "INVALID_PASSWORD": "",
+    "INVALID_STATE": "",
+    "MFA_METHOD_NOT_FOUND": "",
+    "NOT_AUTHORIZED": AuthServiceError.UserAlreadyConfirmed,
+    "PASSWORD_RESET_REQUIRED": "",
+    "PLATFORM_EXCEPTIONS": "",
+    "RESOURCE_NOT_FOUND": "",
+    "REQUEST_LIMIT_EXCEEDED": "",
+    "SESSION_EXPIRED": "",
+    "SESSION_UNAVAILABLE_OFFLINE": "",
+    "SESSION_UNAVAILABLE_SERVICE": "",
+    "SIGNED_OUT": "",
+    "SOFTWARE_TOKEN_MFA_NOT_FOUND": "",
+    "TOO_MANY_REQUESTS": "",
+    "USERNAME_EXISTS": "",
+    "UNEXPECTED_LAMBDA": "",
+    "USER_LAMBDA_VALIDATION": "",
+    "USER_NOT_CONFIRMED": "",
+    "USER_NOT_FOUND": AuthServiceError.UserNotFound,
+    "TOO_MANY_FAILED_REQUESTS": "",
+    "VALIDATION": "",
+  };
+
   AuthService._internal();
 
   AmplifyService _amplify = AmplifyService.getInstance();
@@ -78,11 +125,43 @@ class AuthService {
     }
   }
 
+  Future<bool> joinMessageCurator(String email) async {
+    bool success = await join(email, defaultPassword);
+    if (success) {
+      await SettingsService.getInstance().setJoined(email);
+    }
+    return true;
+  }
+
   Future<bool> confirmJoin(String email, String inviteToken) async {
     try {
       return await _amplify.confirmSignUp(email, inviteToken);
     } on AuthError catch (e) {
-      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+      var exception;
+      var detail;
+      e.exceptionList.forEach((i) {
+        switch (i.exception) {
+          case "NOT_AUTHORIZED":
+            exception = i.exception;
+            detail = i.detail;
+            break;
+          case "USER_NOT_FOUND":
+            exception = i.exception;
+            detail = i.detail;
+            break;
+          case "CODE_MISMATCH":
+            exception = i.exception;
+            detail = i.detail;
+            break;
+          case "CODE_EXPIRED":
+            exception = i.exception;
+            detail = i.detail;
+            break;
+          default:
+            break;
+        }
+      });
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause), exception: _getErrorException(exception), detail: detail);
     }
   }
 
@@ -130,12 +209,28 @@ class AuthService {
     try {
       return await _amplify.updatePassword(oldPassword, newPassword);
     } on AuthError catch (e) {
-      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
+      var exception;
+      var detail;
+      e.exceptionList.forEach((i) {
+        switch (i.exception) {
+          case "INVALID_PARAMETER":
+            exception = i.exception;
+            detail = i.detail;
+            break;
+          default:
+            break;
+        }
+      });
+      throw AuthServiceError.init(cause: _getErrorCause(e.cause), exception: _getErrorException(exception), detail: detail);
     }
   }
 
   static AuthService getInstance() {
     return _instance;
+  }
+
+  String _getErrorException(String amplifyException) {
+    return _amplifyExceptionMap[amplifyException] != null ? _amplifyExceptionMap[amplifyException] : null;
   }
 
   String _getErrorCause(String amplifyCause) {

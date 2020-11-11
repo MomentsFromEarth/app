@@ -6,7 +6,7 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GUEST@MFE: ~/reset-password'),
+        title: Text('~/reset-password'),
       ),
       body: Center(
         child: Column(

@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext rootContext) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GUEST@MFE: ~/home'),
+        title: Text('~/home'),
       ),
       body: Builder(
         // Create an inner BuildContext so that the onPressed methods
