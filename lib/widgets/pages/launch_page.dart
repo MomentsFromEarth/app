@@ -35,8 +35,7 @@ class _LaunchPageState extends State<LaunchPage> {
   }
 
   void loadArchivePage() {
-    Navigator.of(context).pushReplacementNamed(HomePage.routeName);
-    // Navigator.of(context).pushReplacementNamed(ArchivePage.routeName);
+    Navigator.of(context).pushReplacementNamed(ArchivePage.routeName);
   }
 
   void loadHomePage() {

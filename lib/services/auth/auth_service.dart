@@ -4,8 +4,27 @@ import 'package:flutter/services.dart';
 import '../aws/amplify_service.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
-class AuthServiceError implements Exception { 
+class AuthServiceError implements Exception {
+  static const ConfirmSigninFailed =                      "MFE_CONFIRM_SIGNIN_FAILED";
+  static const ConfirmSignupFailed =                      "MFE_CONFIRM_SIGNUP_FAILED";
+  static const ConfirmPasswordFailed =                    "MFE_CONFIRM_PASSWORD_FAILED";
+  static const GetCurrentUserFailed =                     "MFE_GET_CURRENT_USER_FAILED";
+  static const ResendSignupCodeFailed =                   "MFE_RESEND_SIGNUP_CODE_FAILED";
+  static const FetchSessionFailed =                       "MFE_FETCH_SESSION_FAILED";
+  static const SigninFailed =                             "MFE_SIGNIN_FAILED";
+  static const SignoutFailed =                            "MFE_SIGNOUT_FAILED";
+  static const SignupFailed =                             "MFE_SIGNUP_FAILED";
+  static const ResetPasswordFailed =                      "MFE_RESET_PASSWORD_FAILED";
+  static const RequestMalformed =                         "MFE_REQUEST_MALFORMED";
+  static const UpdatePasswordFailed =                     "MFE_UPDATE_PASSWORD_FAILED";
+  static const ErrorCastingInputInPlatformCode =          "MFE_ERROR_CASTING_INPUT_IN_PLATFORM_CODE";
+  static const ErrorFormattingPlatformChannelResponse =   "MFE_ERROR_FORMATTING_PLATFORM_CHANNEL_RESPONSE";
+  static const PlatformExceptions =                       "MFE_PLATFORM_EXCEPTIONS";
+  static const AuthPluginIncorrectlyAdded =               "MFE_AUTH_PLUGIN_INCORRECTLY_ADDED";
+  static const UnrecognizedAuthError =                    "MFE_UNRECOGNIZED_AUTH_ERROR";
+
   String cause;
+
   AuthServiceError.init({@required String cause, PlatformException platformException}) {
     this.cause = cause;
   }
@@ -17,24 +36,23 @@ class AuthService {
   static final _instance = AuthService._internal();
 
   static final _amplifyErrorMap = {
-    "AMPLIFY_CONFIRM_SIGNIN_FAILED":                "MFE_CONFIRM_SIGNIN_FAILED",
-    "AMPLIFY_CONFIRM_SIGNUP_FAILED":                "MFE_CONFIRM_SIGNUP_FAILED",
-    "AMPLIFY_CONFIRM_PASSWORD_FAILED":              "MFE_CONFIRM_PASSWORD_FAILED",
-    "AMPLIFY_GET_CURRENT_USER_FAILED":              "MFE_GET_CURRENT_USER_FAILED",
-    "AMPLIFY_RESEND_SIGNUP_CODE_FAILED":            "MFE_RESEND_SIGNUP_CODE_FAILED",
-    "AMPLIFY_FETCH_SESSION_FAILED":                 "MFE_FETCH_SESSION_FAILED",
-    "AMPLIFY_SIGNIN_FAILED":                        "MFE_SIGNIN_FAILED",
-    "AMPLIFY_SIGNOUT_FAILED":                       "MFE_SIGNOUT_FAILED",
-    "AMPLIFY_SIGNUP_FAILED":                        "MFE_SIGNUP_FAILED",
-    "AMPLIFY_RESET_PASSWORD_FAILED":                "MFE_RESET_PASSWORD_FAILED",
-    "AMPLIFY_REQUEST_MALFORMED":                    "MFE_REQUEST_MALFORMED",
-    "AMPLIFY_UPDATE_PASSWORD_FAILED":               "MFE_UPDATE_PASSWORD_FAILED",
-    "ERROR_CASTING_INPUT_IN_PLATFORM_CODE":         "MFE_ERROR_CASTING_INPUT_IN_PLATFORM_CODE",
-    "ERROR_FORMATTING_PLATFORM_CHANNEL_RESPONSE":   "MFE_ERROR_FORMATTING_PLATFORM_CHANNEL_RESPONSE",
-    "PLATFORM_EXCEPTIONS":                          "MFE_PLATFORM_EXCEPTIONS",
-    "AUTH_PLUGIN_INCORRECTLY_ADDED":                "MFE_AUTH_PLUGIN_INCORRECTLY_ADDED"
+    "AMPLIFY_CONFIRM_SIGNIN_FAILED":                AuthServiceError.ConfirmSigninFailed,
+    "AMPLIFY_CONFIRM_SIGNUP_FAILED":                AuthServiceError.ConfirmSignupFailed,
+    "AMPLIFY_CONFIRM_PASSWORD_FAILED":              AuthServiceError.ConfirmSignupFailed,
+    "AMPLIFY_GET_CURRENT_USER_FAILED":              AuthServiceError.GetCurrentUserFailed,
+    "AMPLIFY_RESEND_SIGNUP_CODE_FAILED":            AuthServiceError.ResendSignupCodeFailed,
+    "AMPLIFY_FETCH_SESSION_FAILED":                 AuthServiceError.FetchSessionFailed,
+    "AMPLIFY_SIGNIN_FAILED":                        AuthServiceError.SigninFailed,
+    "AMPLIFY_SIGNOUT_FAILED":                       AuthServiceError.SignoutFailed,
+    "AMPLIFY_SIGNUP_FAILED":                        AuthServiceError.SignupFailed,
+    "AMPLIFY_RESET_PASSWORD_FAILED":                AuthServiceError.ResetPasswordFailed,
+    "AMPLIFY_REQUEST_MALFORMED":                    AuthServiceError.RequestMalformed,
+    "AMPLIFY_UPDATE_PASSWORD_FAILED":               AuthServiceError.UpdatePasswordFailed,
+    "ERROR_CASTING_INPUT_IN_PLATFORM_CODE":         AuthServiceError.ErrorCastingInputInPlatformCode,
+    "ERROR_FORMATTING_PLATFORM_CHANNEL_RESPONSE":   AuthServiceError.ErrorFormattingPlatformChannelResponse,
+    "PLATFORM_EXCEPTIONS":                          AuthServiceError.PlatformExceptions,
+    "AUTH_PLUGIN_INCORRECTLY_ADDED":                AuthServiceError.AuthPluginIncorrectlyAdded
   };
-  static const _defaultAuthServiceError = "MFE_UNRECOGNIZED_AUTH_ERROR";
 
   AuthService._internal();
 
@@ -49,11 +67,7 @@ class AuthService {
   }
 
   Future<bool> loggedIn() async {
-    try {
-      return await _amplify.isSignedIn();
-    } on AuthError catch (e) {
-      throw AuthServiceError.init(cause: _getErrorCause(e.cause));
-    }
+    return await _amplify.isSignedIn();
   }
 
   Future<bool> join(String email, String password) async {
@@ -125,6 +139,6 @@ class AuthService {
   }
 
   String _getErrorCause(String amplifyCause) {
-    return _amplifyErrorMap[amplifyCause] != null ?  _amplifyErrorMap[amplifyCause] : _defaultAuthServiceError;
+    return _amplifyErrorMap[amplifyCause] != null ?  _amplifyErrorMap[amplifyCause] : AuthServiceError.UnrecognizedAuthError;
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../services/auth/auth_service.dart';
+import './home_page.dart';
+
 class ArchivePage extends StatelessWidget {
   static const routeName = '/archive/index';
   @override
@@ -12,9 +15,15 @@ class ArchivePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Archive Page',
-            )
+            FlatButton(
+              child: Text('Logout'),
+              color: Colors.green,
+              textColor: Colors.white70,
+              onPressed: () {
+                AuthService.getInstance().logout();
+                Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+              },
+            ),
           ]
         )
       )

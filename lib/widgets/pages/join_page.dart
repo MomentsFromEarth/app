@@ -25,130 +25,162 @@ class _JoinPageState extends State<JoinPage> {
     Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
   }
 
-  onJoinPressed(BuildContext context) async {
+  onJoinPressed(BuildContext rootContext, BuildContext nestedContext) async {
+    String email = emailController.text;
+    String token = tokenController.text;
+    String password = passwordController.text;
     try {
-      String email = emailController.text;
-      String token = tokenController.text;
-      String password = passwordController.text;
       if (!blank(email) && !blank(token) && !blank(password)) {
-        var auth = AuthService.getInstance();
-        bool confirmed = await auth.confirmJoin(email, token);
-        if (confirmed) {
-          bool signedIn = await auth.login(email, AuthService.defaultPassword);
-          if (signedIn) {
-            bool updated = await auth.updatePassword(AuthService.defaultPassword, password);
-            if (updated) {
-              await auth.logout();
-              signedIn = await auth.login(email, password);
-              if (signedIn) {
-                Navigator.of(context).pushReplacementNamed(ArchivePage.routeName);
-              } else {
-                // show snackbar error
-              }
-            } else {
-               // show snackbar error
-            }
-          } else {
-            // show snackbar error
-          }
-        } else {
-          // prompt to resend invitation token
-        }
+        var authService = AuthService.getInstance();
+        await authService.confirmJoin(email, token);
+        await authService.logout();
+        await authService.login(email, AuthService.defaultPassword);
+        await authService.updatePassword(AuthService.defaultPassword, password);
+        await authService.logout();
+        await authService.login(email, password);
+        Navigator.of(rootContext).pushReplacementNamed(ArchivePage.routeName);
       }
     } on AuthServiceError catch (e) {
-      print("JoinPage::onJoinPressed.error[${e.cause}]");
-      // show snackbar error, unless MFE_CONFIRM_SIGNUP_FAILED, at which prompt to resend invitation token
+      print("JoinPage.onJoinPressed - ERROR[${e.cause}]");
+      switch (e.cause) {
+        case AuthServiceError.ConfirmSignupFailed:
+          _showResendInviteTokenDialog(email, nestedContext);
+          break;
+        default:
+          Scaffold.of(nestedContext)
+            ..removeCurrentSnackBar()
+            ..showSnackBar(SnackBar(content: Text('ERROR[${e.cause}]')));
+          break;
+      }
     }
   }
 
+  Future<void> _showResendInviteTokenDialog(String email, BuildContext nestedContext) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("ERROR['|'[]|<[-|\\|]"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Unable to confirm Curator Invite', style: TextStyle(color: Colors.black87))
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('RESEND'),
+              onPressed: () async {
+                var authService = AuthService.getInstance();
+                await authService.resendInviteToken(email);
+                Scaffold.of(nestedContext)
+                  ..removeCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text('INVITE RESENT [$email]')));
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext rootContext) {
     return Scaffold(
       appBar: AppBar(
         title: Text('GUEST@MFE: ~/join'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                hintText: 'Email',
-                hintStyle: TextStyle(
-                  color: Colors.white30,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                hintText: 'Password',
-                hintStyle: TextStyle(
-                  color: Colors.white30,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLength: null,
-              maxLines: null,
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: tokenController,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green),
-                  borderRadius: BorderRadius.circular(0.5)
-                ),
-                hintText: "Curator Invitation ['|'[]|<[-|\\|]",
-                hintStyle: TextStyle(
-                  color: Colors.white30,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLength: null,
-              maxLines: null,
-            ),
-            SizedBox(height: 10),
-            FlatButton(
-              child: Text('Join'),
-              color: Colors.green,
-              textColor: Colors.white70,
-              onPressed: () => onJoinPressed(context),
-            ),
-            SizedBox(height: 10),
-            FlatButton(
-              child: Text('Login'),
-              color: Colors.green,
-              textColor: Colors.white70,
-              onPressed: () => onLoginPressed(context),
-            ),
-          ]
-        )
+      body: Builder(
+        builder: (BuildContext nestedContext) {
+          // Create an inner BuildContext so that the onPressed methods
+          // can refer to the Scaffold with Scaffold.of().
+          return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          hintText: 'Email',
+                          hintStyle: TextStyle(
+                            color: Colors.white30,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          hintText: 'Password',
+                          hintStyle: TextStyle(
+                            color: Colors.white30,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        maxLength: null,
+                        maxLines: null,
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: tokenController,
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(0.5)
+                          ),
+                          hintText: "Curator Invitation ['|'[]|<[-|\\|]",
+                          hintStyle: TextStyle(
+                            color: Colors.white30,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        maxLength: null,
+                        maxLines: null,
+                      ),
+                      SizedBox(height: 10),
+                      FlatButton(
+                        child: Text('Join'),
+                        color: Colors.green,
+                        textColor: Colors.white70,
+                        onPressed: () => onJoinPressed(rootContext, nestedContext),
+                      ),
+                      SizedBox(height: 10),
+                      FlatButton(
+                        child: Text('Login'),
+                        color: Colors.green,
+                        textColor: Colors.white70,
+                        onPressed: () => onLoginPressed(rootContext),
+                      ),
+                    ]
+                  )
+                );
+        }
       )
     );
   }

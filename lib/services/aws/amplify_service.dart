@@ -26,10 +26,8 @@ class AmplifyService {
         options: CognitoSessionOptions(getAWSCredentials: true)
       );
       return sess.isSignedIn;
-    } on AuthError catch (e) {
-      print("ERROR[AmplifyService.isSignedIn]");
-      print(e.cause);
-      throw e;
+    } on AuthError catch (_) {
+      return false;
     }
   }
 
@@ -86,8 +84,7 @@ class AmplifyService {
       );
       return res.isSignedIn;
     } on AuthError catch (e) {
-      print("ERROR[AmplifyService.signIn]");
-      print(e.cause);
+      print("AmplifyService.signIn - ERROR[${e.cause}]");
       throw e;
     }
   }
