@@ -109,11 +109,6 @@ class AuthService {
     try {
       await _amplify.init();
     } on AuthError catch (e) {
-      print("cas:${e.cause}");
-      e.exceptionList.forEach((i) {
-        print("exc:${i.exception}");
-        print("det:${i.detail}");
-      });
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
   }

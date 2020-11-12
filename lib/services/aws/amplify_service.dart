@@ -13,7 +13,7 @@ class AmplifyService {
   init() async {
     AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
     amplifyInstance.addPlugin(authPlugins: [authPlugin]);
-    await amplifyInstance.configure(amplifyconfiguration);
+    await amplifyInstance.configure(amplifyconfig);
   }
 
   static AmplifyService getInstance() {
@@ -27,11 +27,6 @@ class AmplifyService {
       );
       return sess.isSignedIn;
     } on AuthError catch (e) {
-      print("cas:${e.cause}");
-      e.exceptionList.forEach((i) {
-        print("exc:${i.exception}");
-        print("det:${i.detail}");
-      });
       return false;
     }
   }
