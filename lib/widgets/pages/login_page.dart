@@ -27,15 +27,15 @@ class _LoginPageState extends State<LoginPage> {
     String password = passwordController.text;
     try {
       if (!blank(email) && !blank(password)) {
-        var loggedIn = await AuthService.getInstance().login(email, password);
+        var auth = AuthService.getInstance();
+        await auth.logout();
+        var loggedIn = await auth.login(email, password);
         if (loggedIn) {
           Navigator.of(rootContext).pushReplacementNamed(ArchivePage.routeName);
         }
       }
     } on AuthServiceError catch (e) {
       var msg = "ERROR[${e.cause}]";
-      switch (e.cause) {
-      }
       print("LoginPage.onLoginPressed - $msg");
       Scaffold.of(nestedContext)
         ..removeCurrentSnackBar()

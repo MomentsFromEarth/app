@@ -1,4 +1,4 @@
-const amplifyconfig = ''' {
+const amplifyconfiguration = ''' {
     "UserAgent": "aws-amplify-cli/2.0",
     "Version": "1.0",
     "auth": {
@@ -20,8 +20,8 @@ const amplifyconfig = ''' {
                 "CognitoUserPool": {
                     "Default": {
                         "PoolId": "us-east-1_iJhXcJLvi",
-                        "AppClientId": "i7g3lt3m46l67jn00l769ung4",
-                        "AppClientSecret": "m140lt6ut2fc300fq32begqcis7avf5md66528enfademmtujtp",
+                        "AppClientId": "$APP_CLIENT_ID",
+                        "AppClientSecret": "$APP_CLIENT_SECRET",
                         "Region": "us-east-1"
                     }
                 },

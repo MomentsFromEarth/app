@@ -1,7 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_core/amplify_core.dart';
 
-import '../aws/amplify_config.dart';
+import './amplify_configuration.dart';
 
 class AmplifyService {
   static final _instance = AmplifyService._internal();
@@ -13,7 +13,7 @@ class AmplifyService {
   init() async {
     AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
     amplifyInstance.addPlugin(authPlugins: [authPlugin]);
-    await amplifyInstance.configure(amplifyconfig);
+    await amplifyInstance.configure(amplifyconfiguration);
   }
 
   static AmplifyService getInstance() {
@@ -26,7 +26,12 @@ class AmplifyService {
         options: CognitoSessionOptions(getAWSCredentials: true)
       );
       return sess.isSignedIn;
-    } on AuthError catch (_) {
+    } on AuthError catch (e) {
+      print("cas:${e.cause}");
+      e.exceptionList.forEach((i) {
+        print("exc:${i.exception}");
+        print("det:${i.detail}");
+      });
       return false;
     }
   }

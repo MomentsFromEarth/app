@@ -7,7 +7,27 @@ class SettingsService {
   String _joinPasswordKey = 'join:password';
   String _joinConfirmedKey = 'join:confirmed';
 
+  String _forgotEmailKey = 'forgot:email';
+
   SettingsService._internal();
+
+  /* forgot */
+
+  Future<bool> setForgotEmail(String email) async {
+    return await setString(_forgotEmailKey, email);
+  }
+
+  Future<String> getForgotEmail() async {
+    return await getString(_forgotEmailKey);
+  }
+
+  Future<bool> removeForgotEmail() async {
+    return await remove(_forgotEmailKey);
+  }
+
+  /* ~forgot */
+
+  /* joined */
 
   Future<void> setJoined(String email) async {
     await setJoinedConfirmed(false);
@@ -44,6 +64,8 @@ class SettingsService {
     await remove(_joinPasswordKey);
     await remove(_joinEmailKey);
   }
+
+  /* ~joined */
 
   Future<bool> setString(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

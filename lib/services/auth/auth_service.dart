@@ -50,7 +50,7 @@ class AuthService {
   static final _amplifyErrorMap = {
     "AMPLIFY_CONFIRM_SIGNIN_FAILED":                AuthServiceError.ConfirmSigninFailed,
     "AMPLIFY_CONFIRM_SIGNUP_FAILED":                AuthServiceError.ConfirmSignupFailed,
-    "AMPLIFY_CONFIRM_PASSWORD_FAILED":              AuthServiceError.ConfirmSignupFailed,
+    "AMPLIFY_CONFIRM_PASSWORD_FAILED":              AuthServiceError.ConfirmSigninFailed,
     "AMPLIFY_GET_CURRENT_USER_FAILED":              AuthServiceError.GetCurrentUserFailed,
     "AMPLIFY_RESEND_SIGNUP_CODE_FAILED":            AuthServiceError.ResendSignupCodeFailed,
     "AMPLIFY_FETCH_SESSION_FAILED":                 AuthServiceError.FetchSessionFailed,
@@ -109,6 +109,11 @@ class AuthService {
     try {
       await _amplify.init();
     } on AuthError catch (e) {
+      print("cas:${e.cause}");
+      e.exceptionList.forEach((i) {
+        print("exc:${i.exception}");
+        print("det:${i.detail}");
+      });
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
     }
   }
@@ -175,6 +180,7 @@ class AuthService {
 
   Future<bool> login(String email, String password) async {
     try {
+      await logout();
       return await _amplify.signIn(email, password);
     } on AuthError catch (e) {
       throw AuthServiceError.init(cause: _getErrorCause(e.cause));
