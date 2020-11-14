@@ -33,6 +33,10 @@ dependencies:
   amplify_core: '<1.0.0'
   amplify_auth_cognito: '<1.0.0'
 
+  image_picker: '^0.6.7'
+  video_thumbnail: '^0.2.4'
+  path_provider: '^1.6.24'
+
   shared_preferences: '<1.0.0'
 
 dev_dependencies:
