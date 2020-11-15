@@ -113,6 +113,10 @@ class AuthService {
     }
   }
 
+  Future<String> token() async {
+    return await _amplify.idToken();
+  }
+
   Future<bool> loggedIn() async {
     return await _amplify.isSignedIn();
   }

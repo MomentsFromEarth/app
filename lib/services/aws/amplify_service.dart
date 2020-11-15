@@ -27,7 +27,20 @@ class AmplifyService {
       );
       return sess.isSignedIn;
     } on AuthError catch (e) {
+      print("AmplifyService.isSignedIn - ERROR[${e.cause}]");
       return false;
+    }
+  }
+
+  Future<String> idToken() async {
+    try {
+      CognitoAuthSession sess = await Amplify.Auth.fetchAuthSession(
+        options: CognitoSessionOptions(getAWSCredentials: true)
+      );
+      return sess.userPoolTokens.idToken;
+    } on AuthError catch (e) {
+      print("AmplifyService.idToken - ERROR[${e.cause}]");
+      return null;
     }
   }
 
